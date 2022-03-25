@@ -10,6 +10,14 @@ namespace Percolation
     {
         static void Main(string[] args)
         {
+            Percolation p = new Percolation(6);
+
+            p.Display();
+            p.DebugOpenAllCells();
+            p.Display();
+            Console.WriteLine(p.Percolate());
+            string res = Console.ReadLine();
+
         }
     }
 }
