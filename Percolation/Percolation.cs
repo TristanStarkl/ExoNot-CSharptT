@@ -29,13 +29,13 @@ namespace Percolation
          * Renvoie l'état de la case i, j du tableau open
          * Si i et j ne sont pas dans le tableau, renvoie false
          */
-        private bool IsOpen(int i, int j)
+        public bool IsOpen(int i, int j)
         {
             if (i >= 0 && i <= this._size && j >= 0 && j <= this._size)
                 return this._open[i, j];
             return false;
         }
-        private bool IsOpen(KeyValuePair<int, int> cell)
+        public bool IsOpen(KeyValuePair<int, int> cell)
         {
             return this.IsOpen(cell.Key, cell.Value);
         }
@@ -88,14 +88,14 @@ namespace Percolation
             }
         }
 
-        private void Open(int i, int j)
+        public void Open(int i, int j)
         {
             if (i >= 0 && i <= this._size && j >= 0 && j <= this._size)
             {
                 if (this.IsOpen(i, j))
                     return;
                 this._open[i, j] = true;
-                if (j == this._size)
+                if (i == 0)
                     this._full[i, j] = true;
 
                 // Check si les neighbourds sont plein d'eau
@@ -113,8 +113,11 @@ namespace Percolation
             {
                 throw new ArgumentException("I et j sont en dehors de la range");
             }
-            if (this._full[i, j] && j == this._size - 1)
-                this._percolate = true;
+            for (int c = 0; c < this._size; c++)
+            {
+                if (this._full[this._size - 1, c])
+                    this._percolate = true;
+            }
         }
 
         public bool Percolate()
@@ -132,8 +135,17 @@ namespace Percolation
                         Console.Write('o');
                     else
                         Console.Write('x');
+                    
                 }
-                Console.WriteLine(' ');
+                Console.Write(' ');
+                for (int j = 0; j < this._size; j++)
+                {
+                    if (this.IsFull(i, j))
+                        Console.Write('o');
+                    else
+                        Console.Write('x');
+                }
+                Console.WriteLine(" ");
             }
         }
     }
