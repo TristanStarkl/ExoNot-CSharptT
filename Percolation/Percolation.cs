@@ -14,10 +14,11 @@ namespace Percolation
         private readonly int _size;
         private bool _percolate;
 
-        /*
-         * Constructeur
-         * @params int size: >0, la taille de la grille
-         */
+        /// <summary>
+        /// Constructeur
+        /// </summary>
+        /// <param name="size">Taille de la grille. Doit être > 0</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Percolation(int size)
         {
             if (size <= 0)
