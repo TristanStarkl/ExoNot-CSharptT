@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Percolation
 {
+
     public class Percolation
     {
         private readonly bool[,] _open;
@@ -13,6 +14,10 @@ namespace Percolation
         private readonly int _size;
         private bool _percolate;
 
+        /*
+         * Constructeur
+         * @params int size: >0, la taille de la grille
+         */
         public Percolation(int size)
         {
             if (size <= 0)
@@ -28,6 +33,8 @@ namespace Percolation
         /*
          * Renvoie l'état de la case i, j du tableau open
          * Si i et j ne sont pas dans le tableau, renvoie false
+         * @param int i, int j: les coordonnées
+         * @return bool: l'état (ouverte ou fermée)
          */
         public bool IsOpen(int i, int j)
         {
@@ -43,6 +50,8 @@ namespace Percolation
         /*
          * Renvoie l'état de la case i, j du tableau open
          * Si i et j ne sont pas dans le tableau, renvoie false
+         * @param int i, int j: les coordonnées
+         * @return bool: l'état (pleine d'eau ou non)
          */
         private bool IsFull(int i, int j)
         {
@@ -59,6 +68,9 @@ namespace Percolation
             return this.IsFull(cell.Key, cell.Value);
         }
 
+        /*
+         * Renvoie la liste des voisins proches
+         */
         private List<KeyValuePair<int, int>> CloseNeighbors(int i, int j)
         {
             List<KeyValuePair<int, int>> resultat = new List<KeyValuePair<int, int>>();
@@ -75,6 +87,10 @@ namespace Percolation
             return resultat;
         }
 
+        /*
+         * Met à jour les voisins 
+         * Si la cellule voisine est pleine d'eau et que nous somme sèche, nous remplie d'eau et met à jour nos voisines
+         */
         private void UpdateNeighbors(int i, int j)
         {
             List<KeyValuePair<int, int>> listCells = this.CloseNeighbors(i, j);
@@ -88,6 +104,10 @@ namespace Percolation
             }
         }
 
+
+        /*
+         * Ouvre la cellule aux coordonénes i, j
+         */
         public void Open(int i, int j)
         {
             if (i >= 0 && i <= this._size && j >= 0 && j <= this._size)
@@ -120,11 +140,27 @@ namespace Percolation
             }
         }
 
+        /*
+         * Surcharge avec une coordonnée
+         */
+        public void Open(KeyValuePair<int, int> cell)
+        {
+            this.Open(cell.Key, cell.Value);
+        }
+
+        /*
+         * Renvoie l'état de est-ce qu'on percolate
+         */
         public bool Percolate()
         {
             return this._percolate;
         }
 
+        /*
+         * Display la grille
+         * à gauche la grille contenant du vide ou des rochers
+         * à droite la grille contenant l'eau ou du vide
+         */
         public void Display()
         {
             for (int i = 0; i < this._size; i++)
@@ -135,7 +171,7 @@ namespace Percolation
                         Console.Write('o');
                     else
                         Console.Write('x');
-                    
+
                 }
                 Console.Write(' ');
                 for (int j = 0; j < this._size; j++)
