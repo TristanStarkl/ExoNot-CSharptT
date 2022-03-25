@@ -11,7 +11,6 @@ namespace Percolation
         private readonly bool[,] _open;
         private readonly bool[,] _full;
         private readonly int _size;
-        private bool[,] _alreadyChecked;
         private bool _percolate;
 
         public Percolation(int size)
@@ -23,7 +22,6 @@ namespace Percolation
 
             _open = new bool[size, size];
             _full = new bool[size, size];
-            _alreadyChecked = new bool[size, size];
             _size = size;
         }
 
@@ -34,8 +32,12 @@ namespace Percolation
         private bool IsOpen(int i, int j)
         {
             if (i >= 0 && i <= this._size && j >= 0 && j <= this._size)
-                return this._open[i,j];
+                return this._open[i, j];
             return false;
+        }
+        private bool IsOpen(KeyValuePair<int, int> cell)
+        {
+            return this.IsOpen(cell.Key, cell.Value);
         }
 
         /*
@@ -47,6 +49,14 @@ namespace Percolation
             if (i >= 0 && i <= this._size && j >= 0 && j <= this._size)
                 return this._full[i, j];
             return false;
+        }
+
+        /* 
+         * Surcharge qui prend une cell
+         */
+        private bool IsFull(KeyValuePair<int, int> cell)
+        {
+            return this.IsFull(cell.Key, cell.Value);
         }
 
         private List<KeyValuePair<int, int>> CloseNeighbors(int i, int j)
@@ -65,81 +75,54 @@ namespace Percolation
             return resultat;
         }
 
+        private void UpdateNeighbors(int i, int j)
+        {
+            List<KeyValuePair<int, int>> listCells = this.CloseNeighbors(i, j);
+            foreach (KeyValuePair<int, int> cell in listCells)
+            {
+                if (this.IsOpen(cell) && !this.IsFull(cell))
+                {
+                    this._full[cell.Key, cell.Value] = true;
+                    this.UpdateNeighbors(cell.Key, cell.Value);
+                }
+            }
+        }
+
         private void Open(int i, int j)
         {
-            throw new NotImplementedException();
-        }
-
-        /*
-         * Renvoie la liste des cellules voisines qui sont ouvertes ET qui ne sont pas déjà vérifiées
-         */
-        private List<KeyValuePair<int, int>> GetOpenNeighborsNotChecked(KeyValuePair<int, int> cell)
-        {
-            List<KeyValuePair<int, int>> resultat = new List<KeyValuePair<int, int>>();
-            int i = cell.Key;
-            int j = cell.Value;
-
-            if (i >= 1 && this.IsOpen(i -1, j) && !this._alreadyChecked[i - 1, j])
-                resultat.Add(new KeyValuePair<int, int>(i - 1, j));
-            if (i < this._size - 1 && this.IsOpen(i + 1, j) && !this._alreadyChecked[i + 1, j])
-                resultat.Add(new KeyValuePair<int, int>(i + 1, j));
-            if (j >= 1 && this.IsOpen(i, j - 1) && !this._alreadyChecked[i , j - 1])
-                resultat.Add(new KeyValuePair<int, int>(i, j - 1));
-            if (j < this._size - 1 && this.IsOpen(i , j + 1) && !this._alreadyChecked[i, j + 1])
-                resultat.Add(new KeyValuePair<int, int>(i, j + 1));
-
-            return resultat;
-        }
-
-        /*
-         * Check par récursion de chaque cellule, si on atteint le bas on renvoie true
-         */
-        private bool PercolateCell(KeyValuePair<int, int> cellule)
-        {
-            if (cellule.Key == this._size)
-                return true;
-            if (this._alreadyChecked[cellule.Key, cellule.Value])
-                return false;
-            List<KeyValuePair<int, int>> listOpenedNeighbors = this.GetOpenNeighborsNotChecked(cellule);
-            // On marque la cellule comme étant vérifiée
-            this._alreadyChecked[cellule.Key, cellule.Value] = true;
-
-            foreach (KeyValuePair<int, int> cell in listOpenedNeighbors)
+            if (i >= 0 && i <= this._size && j >= 0 && j <= this._size)
             {
-                if (PercolateCell(cell))
-                    return true;
-            }
+                if (this.IsOpen(i, j))
+                    return;
+                this._open[i, j] = true;
+                if (j == this._size)
+                    this._full[i, j] = true;
 
-            return false;
-        }
-
-        private void UncheckAllCells()
-        {
-            for (int i = 0; i < this._size; i++)
-            {
-                for (int j = 0; j < this._size; j++)
+                // Check si les neighbourds sont plein d'eau
+                List<KeyValuePair<int, int>> listCells = this.CloseNeighbors(i, j);
+                foreach (KeyValuePair<int, int> cell in listCells)
                 {
-                    this._alreadyChecked[i, j] = false;
+                    if (this.IsFull(cell))
+                        this._full[i, j] = true;
                 }
-            }
-        }
 
-        public void DebugOpenAllCells()
-        {
-            for (int i = 0; i < this._size; i++)
+                if (this._full[i, j])
+                    this.UpdateNeighbors(i, j);
+            }
+            else
             {
-                for (int j = 0; j < this._size; j++)
-                {
-                    this._open[i, j] = true;
-                }
+                throw new ArgumentException("I et j sont en dehors de la range");
             }
         }
 
         public bool Percolate()
         {
-            this.UncheckAllCells();
-
-            return PercolateCell(new KeyValuePair<int, int>(0, 0));
+            for (int j = 0; j < this._size; j++)
+            {
+                if (this._full[this._size - 1, j])
+                    return true;
+            }
+            return false;
         }
 
         public void Display()
