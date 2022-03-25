@@ -40,16 +40,19 @@ namespace Percolation
             foreach (int time in listRes)
                 totalVariance += (time - resultat.Mean) * (time - resultat.Mean);
 
-            resultat.RelativeStd = Math.Sqrt(totalVariance);
+            resultat.StandardDeviation = Math.Sqrt(totalVariance);
+            // Mean ne peut pas être égal à 0 parce qu'on a forcément plus de 0 cases ouvertes
+            resultat.RelativeStd = resultat.StandardDeviation / resultat.Mean;
             return resultat;
         }
 
         public double PercolationValue(int size)
         {
             Percolation p = new Percolation(size);
-            double nbOpenCases = 1;
             Random rand = new Random();
+            double nbOpenCases = 0;
             int i, j;
+
             while (!p.Percolate())
             {
                 do
