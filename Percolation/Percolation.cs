@@ -113,16 +113,13 @@ namespace Percolation
             {
                 throw new ArgumentException("I et j sont en dehors de la range");
             }
+            if (this._full[i, j] && j == this._size - 1)
+                this._percolate = true;
         }
 
         public bool Percolate()
         {
-            for (int j = 0; j < this._size; j++)
-            {
-                if (this._full[this._size - 1, j])
-                    return true;
-            }
-            return false;
+            return this._percolate;
         }
 
         public void Display()
