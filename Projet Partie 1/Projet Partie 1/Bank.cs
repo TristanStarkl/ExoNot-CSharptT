@@ -34,10 +34,11 @@ namespace BankManagement
                                 if (acc.identifiant == listColumns[0])
                                     throw new Exception($"Deux comptes au nom identiques {acc.identifiant}");
                             }
-                            listColumns[1] = listColumns[1].Replace(",", ".");
+                            listColumns[1] = listColumns[1].Replace(".", ",");
                             initialAmount = 0;
                             double.TryParse(listColumns[1], out initialAmount);
-                            resultat.Add(new Account(listColumns[0], initialAmount));
+                            if (initialAmount >= 0)
+                                resultat.Add(new Account(listColumns[0], initialAmount));
                         }
 
                     }
@@ -49,6 +50,17 @@ namespace BankManagement
             }
 
             return resultat;
+        }
+
+        public static bool CheckIfTransactionExist(List<Transaction> list, string identifiant)
+        {
+            foreach (Transaction t in list)
+            {
+                if (t.Name == identifiant)
+                    return true;
+            }
+
+            return false;
         }
 
         public static List<Transaction> ReadTransactionFile(string path, List<Account> listAccount)
@@ -82,9 +94,16 @@ namespace BankManagement
                                     to = acc;
                                 }
                             }
-                            amount = float.Parse(listColumns[1].Replace(".", ","));
+                            if (from.identifiant != to.identifiant)
+                            {
+                                if (!Bank.CheckIfTransactionExist(resultat, listColumns[0]))
+                                {
+                                    amount = float.Parse(listColumns[1].Replace(".", ","));
 
-                            resultat.Add(new Transaction(listColumns[0], amount, from, to));
+                                    resultat.Add(new Transaction(listColumns[0], amount, from, to));
+
+                                }
+                            }
                         }
                         catch (Exception e)
                         {
