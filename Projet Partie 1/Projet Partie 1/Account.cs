@@ -38,14 +38,26 @@ namespace BankManagement
             sumLastTransactions += amount;
             return sumLastTransactions > _limitTransactions;
         }
+
+        /// <summary>
+        /// Vérifie si une transaction est faisable ou pas
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <returns></returns>
         internal virtual bool DoesTheAmountIsSuperiorToTheSolde(double amount)
         {
             return amount > _solde;
         }
+
+        /// <summary>
+        /// Retire le montant de _solde
+        /// </summary>
+        /// <param name="amount"></param>
         internal void Withdraw(double amount)
         {
             _solde -= amount;
         }
+
 
         internal void Deposit(double amount)
         {

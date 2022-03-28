@@ -25,6 +25,10 @@ namespace BankManagement
             To = to;
         }
 
+        /// <summary>
+        /// Effectue une transaction, renvoie l'état
+        /// </summary>
+        /// <returns></returns>
         public string Make()
         {
             if (From == null || To == null)
@@ -43,6 +47,10 @@ namespace BankManagement
             return Status.OK;
         }
 
+        /// <summary>
+        /// Override de l'écriture de la transaction
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return $"{Name}: transfert de {Amount} de {From.identifiant} à {To.identifiant}";

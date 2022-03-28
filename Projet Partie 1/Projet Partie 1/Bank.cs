@@ -11,6 +11,11 @@ namespace BankManagement
         {
         }
 
+        /// <summary>
+        /// Renvoie une liste de compte du fichier path
+        /// </summary>
+        /// <param name="path">Le chemin du fichier</param>
+        /// <returns></returns>
         public static List<Account> ReadAccountFile(string path)
         {
             List<Account> resultat = new List<Account>();
@@ -52,6 +57,12 @@ namespace BankManagement
             return resultat;
         }
 
+        /// <summary>
+        /// Vérifie que la transaction identifiant existe dans la liste de transactions
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="identifiant"></param>
+        /// <returns></returns>
         public static bool CheckIfTransactionExist(List<Transaction> list, string identifiant)
         {
             foreach (Transaction t in list)
@@ -63,6 +74,12 @@ namespace BankManagement
             return false;
         }
 
+        /// <summary>
+        /// Renvoie la liste des transactions adaptés
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="listAccount"></param>
+        /// <returns></returns>
         public static List<Transaction> ReadTransactionFile(string path, List<Account> listAccount)
         {
             List<Transaction> resultat = new List<Transaction>();
