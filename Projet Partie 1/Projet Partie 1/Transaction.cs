@@ -33,7 +33,7 @@ namespace BankManagement
         {
             if (From == null || To == null)
                 return Status.KO;
-            if (From.identifiant == To.identifiant)
+            if (From.Identifiant == To.Identifiant)
                 return Status.KO;
             if (Amount <= 0)
                 return Status.KO;
@@ -55,7 +55,14 @@ namespace BankManagement
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Name}: transfert de {Amount} de {From.identifiant} à {To.identifiant}";
+            string fIdentifiant = "compte inexistant";
+            string tIdentifiant = "compte inexistant";
+            if (From != null)
+                fIdentifiant = From.Identifiant;
+            if (To != null)
+                tIdentifiant = To.Identifiant;
+
+            return $"{Name}: transfert de {Amount} de {fIdentifiant} à {tIdentifiant}";
         }
     }
 }

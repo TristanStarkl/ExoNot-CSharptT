@@ -4,13 +4,8 @@ using System;
 
 namespace BankManagement
 {
-    internal class Bank
+    internal static class Bank
     {
-
-        public Bank()
-        {
-        }
-
         /// <summary>
         /// Renvoie une liste de compte du fichier path
         /// </summary>
@@ -36,8 +31,8 @@ namespace BankManagement
                             // On check que le nom est bien unique
                             foreach (Account acc in resultat)
                             {
-                                if (acc.identifiant == listColumns[0])
-                                    throw new Exception($"Deux comptes au nom identiques {acc.identifiant}");
+                                if (acc.Identifiant == listColumns[0])
+                                    throw new Exception($"Deux comptes au nom identiques {acc.Identifiant}");
                             }
                             listColumns[1] = listColumns[1].Replace(".", ",");
                             initialAmount = 0;
@@ -102,11 +97,11 @@ namespace BankManagement
                             // On recherche maintenant si la matière existe déjà
                             foreach (Account acc in listAccount)
                             {
-                                if (acc.identifiant == listColumns[2])
+                                if (acc.Identifiant == listColumns[2])
                                 {
                                     from = acc;
                                 }
-                                if (acc.identifiant == listColumns[3])
+                                if (acc.Identifiant == listColumns[3])
                                 {
                                     to = acc;
                                 }

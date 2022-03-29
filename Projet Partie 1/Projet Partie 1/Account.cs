@@ -8,7 +8,7 @@ namespace BankManagement
 {
     public class Account
     {
-        public string identifiant { get; set; }
+        public string Identifiant { get; set; }
 
         private List<Transaction> _lastTransactions;
         private double _solde;
@@ -16,7 +16,7 @@ namespace BankManagement
 
         public Account(string identifiant, double solde = 0)
         {
-            this.identifiant = identifiant;
+            Identifiant = identifiant;
             _solde = solde;
             _lastTransactions = new List<Transaction>();
         }
@@ -71,7 +71,7 @@ namespace BankManagement
 
         public override string ToString()
         {
-            return $"Compte numéro {identifiant}: {_solde} euros";
+            return $"Compte numéro {Identifiant}: {_solde} euros";
         }
     }
 }

@@ -14,7 +14,7 @@ namespace BankManagement
 
         public Environnement(string identifiant, double solde = 0) : base(identifiant)
         {
-            this.identifiant = identifiant;
+            Identifiant = identifiant;
             _solde = double.MaxValue;
             _lastTransactions = new List<Transaction>();
         }
@@ -41,5 +41,7 @@ namespace BankManagement
         internal new void Deposit(double amount)
         {
         }
+
+
     }
 }
