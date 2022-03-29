@@ -10,16 +10,15 @@ namespace BankManagement
     public class Transaction
     {
         public double Amount;
-
+        public string Name;
+        public DateTime DateTransaction;
         public Account From;
-
         public Account To;
 
-        public string Name;
-
-        public Transaction(string name, double amount, Account from, Account to)
+        public Transaction(string name, DateTime dateTransaction, double amount, Account from, Account to)
         {
             Name = name;
+            DateTransaction = dateTransaction;
             Amount = amount;
             From = from;
             To = to;
@@ -39,7 +38,7 @@ namespace BankManagement
                 return Status.KO;
             if (From.DoesTheAmountIsSuperiorToTheSolde(Amount))
                 return Status.KO;
-            if (From.CheckIfLimitIsReached(Amount))
+            if (From.CheckIfLimitIsReached(this))
                 return Status.KO;
             // Si on peut le faire, alors
             From.Withdraw(Amount);

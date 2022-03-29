@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{02D14B20-4AA7-4243-B47E-7E69D7750BD4}</ProjectGuid>
+    <ProjectGuid>{8659DFAC-0D01-40C9-83F9-969A852BCD55}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>BankManagement</RootNamespace>
     <AssemblyName>Projet Partie 1</AssemblyName>
@@ -55,8 +55,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

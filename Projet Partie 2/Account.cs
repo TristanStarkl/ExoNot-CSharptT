@@ -12,11 +12,10 @@ namespace BankManagement
 
         private List<Transaction> _lastTransactions;
         private double _solde;
-        private double _limitTransactionsAmount = 1000d;
-        private double _limitTransactions = 10;
-
+        // Todo: bouger la limite dans le gestionnaire
+        internal Gestionnaire Manager;
         private double _temporalTransactionAmount = 2000d;
-        private int _temporalTransactionDays = 7;
+        private int _temporalTransactionDays = 7; 
 
         public Account(string identifiant, double solde = 0)
         {
@@ -30,18 +29,10 @@ namespace BankManagement
             return _solde;
         }
 
+        // Todo
         private bool CheckLimitAmountTransaction(double amount)
         {
-            double sumLastTransactions = 0;
-            if (_lastTransactions.Count >= 1)
-            {
-                for (int i = _lastTransactions.Count - 1; i > 0 && i > _lastTransactions.Count - _limitTransactions; i--)
-                    sumLastTransactions += _lastTransactions[i].Amount;
-            }
-
-            sumLastTransactions += amount;
-            return sumLastTransactions > _limitTransactions;
-
+            return Manager.CheckLimitAmountTransaction(amount);
         }
 
         /// <summary>
@@ -49,7 +40,7 @@ namespace BankManagement
         /// </summary>
         /// <param name="amount"></param>
         /// <returns></returns>
-        private bool CheckTemporalLimitTransaction(double amount)
+        private bool CheckTemporalLimitTransaction(Transaction T)
         {
             return false;
         }
@@ -59,9 +50,9 @@ namespace BankManagement
         /// </summary>
         /// <param name="amount"></param>
         /// <returns></returns>
-        internal bool CheckIfLimitIsReached(double amount)
+        internal bool CheckIfLimitIsReached(Transaction T)
         {
-            return CheckTemporalLimitTransaction(amount) && CheckLimitAmountTransaction(amount);
+            return CheckTemporalLimitTransaction(T) && CheckLimitAmountTransaction(T.Amount);
         }
 
         /// <summary>

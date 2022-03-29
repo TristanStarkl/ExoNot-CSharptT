@@ -13,7 +13,6 @@ namespace BankManagement
             List<Gestionnaire> resultat = new List<Gestionnaire>();
             string[] listColumns;
             int nbTransactions;
-            TypeGestionnaire type;
 
 
             using (StreamReader reader = new StreamReader(path))
@@ -31,12 +30,13 @@ namespace BankManagement
                                 if (ges.Name == listColumns[0])
                                     throw new Exception($"Deux comptes au nom identiques {ges.Name}");
                             }
-                            listColumns[2] = listColumns[1].Replace(".", ",");
+                            listColumns[2] = listColumns[2].Replace(".", ",");
                             nbTransactions = 0;
-                            int.TryParse(listColumns[1], out nbTransactions);
-                            type = listColumns[1] == TypeGestionnaire.ENTREPRISE ? TypeGestionnaire.ENTREPRISE : listColumns[1] == TypeGestionnaire.PARTICULIER ? TypeGestionnaire.PARTICULIER ; 
-                            if (nbTransactions > 0)
-                                resultat.Add(new Gestionnaire(listColumns[0], nbTransactions));
+                            int.TryParse(listColumns[2], out nbTransactions);
+                            if (listColumns[1] == TypeGestionnaire.PARTICULIER && nbTransactions > 0)
+                                resultat.Add(new Particulier(listColumns[0], nbTransactions));
+                            else if (listColumns[1] == TypeGestionnaire.ENTREPRISE && nbTransactions > 0)
+                                resultat.Add(new Enterprise(listColumns[0], nbTransactions));
                         }
 
                     }

@@ -12,11 +12,16 @@ namespace BankManagement
         public const string KO = "KO";
     }
 
+    public enum TypeFrais
+    {
+        PERCENTAGE,
+        FIXE
+    }
+
     public class TypeGestionnaire
     {
         public const string PARTICULIER = "Particulier";
         public const string ENTREPRISE  = "Entreprise";
-        public const string ERROR       = "Erreur";
     }
 
 }
