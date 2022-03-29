@@ -12,7 +12,11 @@ namespace BankManagement
 
         private List<Transaction> _lastTransactions;
         private double _solde;
-        private double _limitTransactions = 1000d;
+        private double _limitTransactionsAmount = 1000d;
+        private double _limitTransactions = 10;
+
+        private double _temporalTransactionAmount = 2000d;
+        private int _temporalTransactionDays = 7;
 
         public Account(string identifiant, double solde = 0)
         {
@@ -26,17 +30,38 @@ namespace BankManagement
             return _solde;
         }
 
-        internal bool CheckIfLimitIsReached(double amount)
+        private bool CheckLimitAmountTransaction(double amount)
         {
             double sumLastTransactions = 0;
             if (_lastTransactions.Count >= 1)
             {
-                for (int i = _lastTransactions.Count - 1; i > 0 && i > _lastTransactions.Count - 10; i--)
+                for (int i = _lastTransactions.Count - 1; i > 0 && i > _lastTransactions.Count - _limitTransactions; i--)
                     sumLastTransactions += _lastTransactions[i].Amount;
             }
 
             sumLastTransactions += amount;
             return sumLastTransactions > _limitTransactions;
+
+        }
+
+        /// <summary>
+        /// ToDO Implémenter la méthode qui vérifie la temporalité de chacune des transactions
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        private bool CheckTemporalLimitTransaction(double amount)
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Vérifie si les transactions sont faisables ou pas
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        internal bool CheckIfLimitIsReached(double amount)
+        {
+            return CheckTemporalLimitTransaction(amount) && CheckLimitAmountTransaction(amount);
         }
 
         /// <summary>

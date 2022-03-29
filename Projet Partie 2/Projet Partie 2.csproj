@@ -46,9 +46,10 @@
     <Compile Include="Account.cs" />
     <Compile Include="Bank.cs" />
     <Compile Include="Environnement.cs" />
+    <Compile Include="Gestionnaire.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Status.cs" />
+    <Compile Include="Const.cs" />
     <Compile Include="Transaction.cs" />
   </ItemGroup>
   <ItemGroup>

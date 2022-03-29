@@ -4,8 +4,54 @@ using System;
 
 namespace BankManagement
 {
-    internal static class Bank
+    internal  class Bank
     {
+
+
+        public static List<Gestionnaire> ReadGestionnaireFile(string path)
+        {
+            List<Gestionnaire> resultat = new List<Gestionnaire>();
+            string[] listColumns;
+            int nbTransactions;
+            TypeGestionnaire type;
+
+
+            using (StreamReader reader = new StreamReader(path))
+            {
+                while (!reader.EndOfStream)
+                {
+                    try
+                    {
+                        listColumns = reader.ReadLine().Split(';');
+                        if (listColumns.Length == 3)
+                        {
+                            // On check que le nom est bien unique
+                            foreach (Gestionnaire ges in resultat)
+                            {
+                                if (ges.Name == listColumns[0])
+                                    throw new Exception($"Deux comptes au nom identiques {ges.Name}");
+                            }
+                            listColumns[2] = listColumns[1].Replace(".", ",");
+                            nbTransactions = 0;
+                            int.TryParse(listColumns[1], out nbTransactions);
+                            type = listColumns[1] == TypeGestionnaire.ENTREPRISE ? TypeGestionnaire.ENTREPRISE : listColumns[1] == TypeGestionnaire.PARTICULIER ? TypeGestionnaire.PARTICULIER ; 
+                            if (nbTransactions > 0)
+                                resultat.Add(new Gestionnaire(listColumns[0], nbTransactions));
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
+            }
+
+            return resultat;
+
+        }
+
+
         /// <summary>
         /// Renvoie une liste de compte du fichier path
         /// </summary>
@@ -17,7 +63,7 @@ namespace BankManagement
             Environnement exterior = new Environnement("0");
             string[] listColumns;
             double initialAmount;
-
+         
             resultat.Add(exterior);
             using (StreamReader reader = new StreamReader(path))
             {

@@ -11,4 +11,12 @@ namespace BankManagement
         public const string OK = "OK";
         public const string KO = "KO";
     }
+
+    public class TypeGestionnaire
+    {
+        public const string PARTICULIER = "Particulier";
+        public const string ENTREPRISE  = "Entreprise";
+        public const string ERROR       = "Erreur";
+    }
+
 }
