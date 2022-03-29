@@ -4,7 +4,7 @@ using System;
 
 namespace BankManagement
 {
-    internal  class Bank
+    internal class Bank
     {
 
 
@@ -48,9 +48,29 @@ namespace BankManagement
             }
 
             return resultat;
-
         }
 
+        public static List<Operation> GetAllOperations(string pathAcctFile, string pathTransactionFile)
+        {
+            List<Operation> resultat = new List<Operation>();
+            string[] listColumns;
+            Operation temp;
+
+            using (StreamReader readerAcct = new StreamReader(pathAcctFile))
+            {
+                // D'abord on lit au moins une fois le AcctFile
+                
+
+                using (StreamReader readerTransaction = new StreamReader(pathTransactionFile))
+                {
+
+                }
+
+            }
+
+            return resultat;
+
+        }
 
         /// <summary>
         /// Renvoie une liste de compte du fichier path
@@ -63,7 +83,7 @@ namespace BankManagement
             Environnement exterior = new Environnement("0");
             string[] listColumns;
             double initialAmount;
-         
+
             resultat.Add(exterior);
             using (StreamReader reader = new StreamReader(path))
             {

@@ -24,4 +24,9 @@ namespace BankManagement
         public const string ENTREPRISE  = "Entreprise";
     }
 
+    enum TypeOperation
+    {
+        TRANSACTION,
+        COMPTE
+    }
 }
