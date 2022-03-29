@@ -111,15 +111,17 @@ namespace BankManagement
                                     to = acc;
                                 }
                             }
-                            if (from.identifiant != to.identifiant)
+
+                            // Vérifie l'unicité de la transaction
+                            if (!Bank.CheckIfTransactionExist(resultat, listColumns[0]))
                             {
-                                if (!Bank.CheckIfTransactionExist(resultat, listColumns[0]))
-                                {
-                                    amount = float.Parse(listColumns[1].Replace(".", ","));
+                                amount = float.Parse(listColumns[1].Replace(".", ","));
 
-                                    resultat.Add(new Transaction(listColumns[0], amount, from, to));
-
-                                }
+                                resultat.Add(new Transaction(listColumns[0], amount, from, to));
+                            }
+                            else // Si la transaction n'est pas unique, on la déclare comme étant fausse
+                            {
+                                resultat.Add(new Transaction(listColumns[0], 0, null, null));
                             }
                         }
                         catch (Exception e)
@@ -129,6 +131,7 @@ namespace BankManagement
                     }
                 }
             }
+
             return resultat;
         }
 

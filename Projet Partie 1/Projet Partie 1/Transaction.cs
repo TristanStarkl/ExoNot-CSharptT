@@ -33,6 +33,8 @@ namespace BankManagement
         {
             if (From == null || To == null)
                 return Status.KO;
+            if (From.identifiant == To.identifiant)
+                return Status.KO;
             if (Amount <= 0)
                 return Status.KO;
             if (From.DoesTheAmountIsSuperiorToTheSolde(Amount))
