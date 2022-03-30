@@ -189,8 +189,6 @@ namespace BankManagement
 
         private string _Execute(Dictionnaire bank)
         {
-            bank.NbTransactions++;
-
             try
             {
                 if (IdentifiantEntree == null && IdentifiantSortie == null)
@@ -204,11 +202,9 @@ namespace BankManagement
             }
             catch
             {
-                bank.NbEchecs++;
                 return Status.KO;
             }
 
-            bank.NbReussites++;
             return Status.OK;
         }
 

@@ -7,15 +7,15 @@ namespace BankManagement
 {
     internal class Bank
     {
-        public List<Operation> Operations;
-        public FileHandling Files;
+        public List<Operation> Operations { get; set; }
+        public FileHandling Files { get; set; }
         public Dictionnaire Listes;
 
         public Bank(List<Operation> operations, List<Gestionnaire> gestionnaires, FileHandling files)
         {
             Operations = operations;
 
-            Listes = new Dictionnaire(gestionnaires);            
+            Listes = new Dictionnaire(gestionnaires);
             Files = files;
         }
 
@@ -113,7 +113,7 @@ namespace BankManagement
                     }
                 }
             }
-             
+
             resultat.Sort();
 
             return (resultat);
