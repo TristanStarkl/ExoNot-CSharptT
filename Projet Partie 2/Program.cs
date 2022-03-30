@@ -10,36 +10,47 @@ namespace BankManagement
     {
         static void Main(string[] args)
         {
-            string acctPath = "Comptes_1.txt";
-            string trxnPath = "Transactions_1.txt";
-            string gestPath = "Gestionnaires_1.txt";
+            for (int i = 1; i != 7; i++)
+            {
+                Console.WriteLine("=======================================================================");
+                Console.WriteLine($"--------------------- TRAITEMENT DES FICHIERS NUMERO {i} --------------");
+                Console.WriteLine("=======================================================================");
+                string acctPath = $"Comptes_{i}.txt";
+                string trxnPath = $"Transactions_{i}.txt";
+                string gestPath = $"Gestionnaires_{i}.txt";
 
-            string sttsAcctPath = "StatutOpe_1.txt";
-            string sttsTrxnPath = "StatutTra_1.txt";
-            string mtrlPath = "Metrologie_1.txt";
+                string sttsAcctPath = $"StatutOpe_{i}.txt";
+                string sttsTrxnPath = $"StatutTra_{i}.txt";
+                string mtrlPath = $"Metrologie_{i}.txt";
 
-            FileHandling files = new FileHandling(sttsAcctPath, sttsTrxnPath, mtrlPath);
-            Bank bank;
+                FileHandling files = new FileHandling(sttsAcctPath, sttsTrxnPath, mtrlPath);
+                Bank bank;
 
-            //TODO: Votre implémentation
-            List<Gestionnaire> listGestionnaires = Bank.ReadGestionnaireFile(gestPath);
-            List<Operation> listOperations = Bank.GetAllOperations(acctPath, trxnPath);
+                //TODO: Votre implémentation
+                List<Gestionnaire> listGestionnaires = Bank.ReadGestionnaireFile(gestPath);
+                List<Operation> listOperations = Bank.GetAllOperations(acctPath, trxnPath);
 
-            Console.WriteLine("------------ GESTIONNAIRES ------------");
-            foreach (Gestionnaire ges in listGestionnaires)
-                Console.WriteLine(ges);
+                Console.WriteLine("------------ GESTIONNAIRES ------------");
+                foreach (Gestionnaire ges in listGestionnaires)
+                    Console.WriteLine(ges);
 
-            Console.WriteLine("------------ OPERATIONS ------------");
-            foreach (Operation ope in listOperations)
-                Console.WriteLine(ope);
+                Console.WriteLine("------------ OPERATIONS ------------");
+                foreach (Operation ope in listOperations)
+                    Console.WriteLine(ope);
 
-            bank = new Bank(listOperations,listGestionnaires, files);
-            bank.Compute();
+                Console.WriteLine("------------ COMPUTATION -----------");
+                bank = new Bank(listOperations,listGestionnaires, files);
+                bank.Compute();
 
+                Console.WriteLine("------------ FRAIS DEXECUTION -----------");
+                foreach (Gestionnaire ges in bank.Listes.Gestionnaires)
+                    Console.WriteLine($"GESTIONNAIRE: {ges.Name}: {ges.TotalFees} euros");
 
+            }
 
 
             // Keep the console window open
+            Console.WriteLine("------------ FIN -----------");
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
         }

@@ -45,7 +45,9 @@ namespace BankManagement
             From.Withdraw(Amount);
             double fees = From.CalculateFees(this);
             To.Deposit(Amount - fees);
-            From.Manager.TotalFees += fees;
+            if (From.Manager != null)
+                From.Manager.TotalFees += fees;
+            Console.WriteLine($"La transaction numéro {Name} de {From.Identifiant} a {To.Identifiant} a entraîné {fees} euros de frais");
             From.AddNewTransaction(this);
             To.AddNewTransaction(this);
         }

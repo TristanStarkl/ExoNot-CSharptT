@@ -51,9 +51,9 @@ namespace BankManagement
                             listColumns[2] = listColumns[2].Replace(".", ",");
                             nbTransactions = 0;
                             int.TryParse(listColumns[2], out nbTransactions);
-                            if (listColumns[1] == TypeGestionnaire.PARTICULIER && nbTransactions > 0)
+                            if (listColumns[1] == TypeGestionnaire.PARTICULIER && nbTransactions >= 0)
                                 resultat.Add(new Particulier(listColumns[0], nbTransactions));
-                            else if (listColumns[1] == TypeGestionnaire.ENTREPRISE && nbTransactions > 0)
+                            else if (listColumns[1] == TypeGestionnaire.ENTREPRISE && nbTransactions >= 0)
                                 resultat.Add(new Enterprise(listColumns[0], nbTransactions));
                         }
 

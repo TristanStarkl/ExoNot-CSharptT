@@ -11,18 +11,16 @@ namespace BankManagement
         public string Identifiant { get; set; }
 
         private List<Transaction> _lastTransactions;
-        private DateTime _dateOuverture;
         private double _solde;
         // Todo: bouger la limite dans le gestionnaire
         internal Gestionnaire Manager;
         private const double _temporalTransactionAmount = 2000d;
         private const int _temporalTransactionDays = 7; 
 
-        public Account(string identifiant, DateTime dateOuv, double solde = 0)
+        public Account(string identifiant, double solde = 0)
         {
             Identifiant = identifiant;
             _solde = solde;
-            _dateOuverture = dateOuv;
             _lastTransactions = new List<Transaction>();
         }
 
@@ -109,7 +107,8 @@ namespace BankManagement
         internal void AddNewTransaction(Transaction t)
         {
             _lastTransactions.Add(t);
-            Manager.AddNewTransaction(t);
+            if (Manager != null)
+                Manager.AddNewTransaction(t);
         }
 
         public override string ToString()

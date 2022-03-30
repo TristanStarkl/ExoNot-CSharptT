@@ -98,9 +98,9 @@ namespace BankManagement
         public override string ToString()
         {
             if (TypeOfOperation == TypeOperation.COMPTE)
-                return $"OPERATION: COMPTE{Identifiant} A LA DATE DU {Date} POUR UN SOLDE INITIAL DE {Amount} POUR LE GESTIONNAIRE {IdentifiantEntree} VERS {IdentifiantSortie}";
+                return $"OPERATION: COMPTE      -{Identifiant}- A LA DATE DU {Date} POUR UN SOLDE INITIAL DE {Amount} POUR LE GESTIONNAIRE {IdentifiantEntree} VERS {IdentifiantSortie}";
             else
-                return $"OPERATION: TRANSACTION{Identifiant} A LA DATE DU {Date} POUR UN MONTANT DE {Amount} DEPUIS LE COMPTE {IdentifiantEntree} VERS {IdentifiantSortie}";
+                return $"OPERATION: TRANSACTION -{Identifiant}- A LA DATE DU {Date} POUR UN MONTANT DE {Amount} DEPUIS LE COMPTE {IdentifiantEntree} VERS {IdentifiantSortie}";
         }
 
         protected Account DoesTheAccountExist(Dictionnaire bank, string name)
@@ -156,7 +156,7 @@ namespace BankManagement
                     throw new ArgumentException($"Le compte existe déjà {Identifiant}");
             }
 
-            account = new Account(Identifiant, Date, Amount);
+            account = new Account(Identifiant, Amount);
             account.Manager = g;
             bank.Accounts.Add(account);
             bank.NbComptes++;

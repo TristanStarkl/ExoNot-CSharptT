@@ -45,7 +45,7 @@ namespace BankManagement
             FH.SortiesStatsF.WriteLine("Frais de gestions :");
             foreach (Gestionnaire g in Gestionnaires)
             {
-                FH.SortiesStatsF.WriteLine($"{g.Name} : {g.MontantFrais} euros");
+                FH.SortiesStatsF.WriteLine($"{g.Name} : {g.TotalFees} euros");
             }
 
         }
