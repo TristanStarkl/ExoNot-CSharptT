@@ -11,16 +11,18 @@ namespace BankManagement
         public string Identifiant { get; set; }
 
         private List<Transaction> _lastTransactions;
+        private DateTime _dateOuverture;
         private double _solde;
         // Todo: bouger la limite dans le gestionnaire
         internal Gestionnaire Manager;
-        private double _temporalTransactionAmount = 2000d;
-        private int _temporalTransactionDays = 7; 
+        private const double _temporalTransactionAmount = 2000d;
+        private const int _temporalTransactionDays = 7; 
 
-        public Account(string identifiant, double solde = 0)
+        public Account(string identifiant, DateTime dateOuv, double solde = 0)
         {
             Identifiant = identifiant;
             _solde = solde;
+            _dateOuverture = dateOuv;
             _lastTransactions = new List<Transaction>();
         }
 
@@ -42,7 +44,16 @@ namespace BankManagement
         /// <returns></returns>
         private bool CheckTemporalLimitTransaction(Transaction T)
         {
-            return false;
+            DateTime minDate = T.DateTransaction - TimeSpan.FromDays(_temporalTransactionDays);
+            double amount = 0d;
+
+            for (int i = _lastTransactions.Count - 1; i >= 0 && _lastTransactions[i].DateTransaction >= minDate; i--)
+            {
+                amount += _lastTransactions[i].Amount;
+            }
+
+            amount += T.Amount;
+            return amount > _temporalTransactionAmount;
         }
 
         /// <summary>
@@ -65,6 +76,21 @@ namespace BankManagement
             return amount > _solde;
         }
 
+        internal virtual bool DoesFeesApply(Account account2)
+        {
+            if (account2.Manager != null && Manager != null)
+                return account2.Manager.Name != Manager.Name;
+
+            return false;
+        }
+
+        internal virtual double CalculateFees(Transaction t)
+        {
+            if (!DoesFeesApply(t.To))
+                return 0d;
+            return Manager.GetAmountFees(t);
+        }
+
         /// <summary>
         /// Retire le montant de _solde
         /// </summary>
@@ -83,6 +109,7 @@ namespace BankManagement
         internal void AddNewTransaction(Transaction t)
         {
             _lastTransactions.Add(t);
+            Manager.AddNewTransaction(t);
         }
 
         public override string ToString()

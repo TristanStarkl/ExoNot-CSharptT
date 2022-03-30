@@ -1,12 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Linq;
 
 namespace BankManagement
 {
     internal class Bank
     {
+        public List<Operation> Operations;
+        public FileHandling Files;
+        public Dictionnaire Listes;
 
+        public Bank(List<Operation> operations, List<Gestionnaire> gestionnaires, FileHandling files)
+        {
+            Operations = operations;
+
+            Listes = new Dictionnaire(gestionnaires);            
+            Files = files;
+        }
+
+        /// <summary>
+        /// Surcharge pour virtual
+        /// </summary>
+        public Bank()
+        {
+        }
 
         public static List<Gestionnaire> ReadGestionnaireFile(string path)
         {
@@ -58,151 +76,63 @@ namespace BankManagement
 
             using (StreamReader readerAcct = new StreamReader(pathAcctFile))
             {
-                // D'abord on lit au moins une fois le AcctFile
-                
-
-                using (StreamReader readerTransaction = new StreamReader(pathTransactionFile))
+                while (!readerAcct.EndOfStream)
                 {
-
-                }
-
-            }
-
-            return resultat;
-
-        }
-
-        /// <summary>
-        /// Renvoie une liste de compte du fichier path
-        /// </summary>
-        /// <param name="path">Le chemin du fichier</param>
-        /// <returns></returns>
-        public static List<Account> ReadAccountFile(string path)
-        {
-            List<Account> resultat = new List<Account>();
-            Environnement exterior = new Environnement("0");
-            string[] listColumns;
-            double initialAmount;
-
-            resultat.Add(exterior);
-            using (StreamReader reader = new StreamReader(path))
-            {
-                while (!reader.EndOfStream)
-                {
-                    try
-                    {
-                        listColumns = reader.ReadLine().Split(';');
-                        if (listColumns.Length == 2)
-                        {
-                            // On check que le nom est bien unique
-                            foreach (Account acc in resultat)
-                            {
-                                if (acc.Identifiant == listColumns[0])
-                                    throw new Exception($"Deux comptes au nom identiques {acc.Identifiant}");
-                            }
-                            listColumns[1] = listColumns[1].Replace(".", ",");
-                            initialAmount = 0;
-                            double.TryParse(listColumns[1], out initialAmount);
-                            if (initialAmount >= 0)
-                                resultat.Add(new Account(listColumns[0], initialAmount));
-                        }
-
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
-                }
-            }
-
-            return resultat;
-        }
-
-        /// <summary>
-        /// Vérifie que la transaction identifiant existe dans la liste de transactions
-        /// </summary>
-        /// <param name="list"></param>
-        /// <param name="identifiant"></param>
-        /// <returns></returns>
-        public static bool CheckIfTransactionExist(List<Transaction> list, string identifiant)
-        {
-            foreach (Transaction t in list)
-            {
-                if (t.Name == identifiant)
-                    return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Renvoie la liste des transactions adaptés
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="listAccount"></param>
-        /// <returns></returns>
-        public static List<Transaction> ReadTransactionFile(string path, List<Account> listAccount)
-        {
-            List<Transaction> resultat = new List<Transaction>();
-            string[] listColumns;
-            float amount;
-            Account from;
-            Account to;
-
-            using (StreamReader reader = new StreamReader(path))
-            {
-                while (!reader.EndOfStream)
-                {
-                    listColumns = reader.ReadLine().Split(';');
-                    if (listColumns.Length == 4)
+                    listColumns = readerAcct.ReadLine().Split(';');
+                    if (listColumns.Length == 5)
                     {
                         try
                         {
-                            from = null;
-                            to = null;
-                            // On recherche maintenant si la matière existe déjà
-                            foreach (Account acc in listAccount)
-                            {
-                                if (acc.Identifiant == listColumns[2])
-                                {
-                                    from = acc;
-                                }
-                                if (acc.Identifiant == listColumns[3])
-                                {
-                                    to = acc;
-                                }
-                            }
-
-                            // Vérifie l'unicité de la transaction
-                            if (!Bank.CheckIfTransactionExist(resultat, listColumns[0]))
-                            {
-                                amount = float.Parse(listColumns[1].Replace(".", ","));
-
-                                resultat.Add(new Transaction(listColumns[0], amount, from, to));
-                            }
-                            else // Si la transaction n'est pas unique, on la déclare comme étant fausse
-                            {
-                                resultat.Add(new Transaction(listColumns[0], 0, null, null));
-                            }
+                            temp = new OperationCompte(listColumns);
+                            resultat.Add(temp);
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine($"Erreur parsing {path} {e}");
+                            Console.WriteLine(e);
                         }
                     }
                 }
             }
 
-            return resultat;
+            using (StreamReader readerTransaction = new StreamReader(pathTransactionFile))
+            {
+                while (!readerTransaction.EndOfStream)
+                {
+                    listColumns = readerTransaction.ReadLine().Split(';');
+                    if (listColumns.Length == 5)
+                    {
+                        try
+                        {
+                            temp = new OperationTransaction(listColumns);
+                            resultat.Add(temp);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                        }
+                    }
+                }
+            }
+             
+            resultat.Sort();
+
+            return (resultat);
         }
 
-        public static void HandleTransactions(List<Transaction> listT, string path)
+        public void Compute()
         {
-            using (StreamWriter writer = new StreamWriter(path))
+            using (StreamWriter account = new StreamWriter(Files.SortieAccount))
             {
-                foreach (Transaction t in listT)
+                using (StreamWriter transaction = new StreamWriter(Files.SortieTransactions))
                 {
-                    writer.WriteLine(t.Name + ";" + t.Make());
+                    using (StreamWriter metrologie = new StreamWriter(Files.SortiesStats))
+                    {
+                        Files.AddStreamWriters(account, transaction, metrologie);
+                        Listes.FH = Files;
+                        foreach (Operation operation in Operations)
+                            operation.Execute(Listes);
+                        Listes.Compute();
+                    }
                 }
             }
         }

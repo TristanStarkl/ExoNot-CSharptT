@@ -12,30 +12,32 @@ namespace BankManagement
         {
             string acctPath = "Comptes_1.txt";
             string trxnPath = "Transactions_1.txt";
-            string sttsPath = "Statut_1.txt";
             string gestPath = "Gestionnaires_1.txt";
+
+            string sttsAcctPath = "StatutOpe_1.txt";
+            string sttsTrxnPath = "StatutTra_1.txt";
+            string mtrlPath = "Metrologie_1.txt";
+
+            FileHandling files = new FileHandling(sttsAcctPath, sttsTrxnPath, mtrlPath);
+            Bank bank;
 
             //TODO: Votre implémentation
             List<Gestionnaire> listGestionnaires = Bank.ReadGestionnaireFile(gestPath);
-            List<Account> acc = Bank.ReadAccountFile(acctPath);
-            List<Transaction> listT = Bank.ReadTransactionFile(trxnPath, acc);
+            List<Operation> listOperations = Bank.GetAllOperations(acctPath, trxnPath);
 
             Console.WriteLine("------------ GESTIONNAIRES ------------");
             foreach (Gestionnaire ges in listGestionnaires)
                 Console.WriteLine(ges);
 
-            Console.WriteLine("------------ COMPTES ------------");
-            foreach (Account ac in acc)
-                Console.WriteLine(ac);
+            Console.WriteLine("------------ OPERATIONS ------------");
+            foreach (Operation ope in listOperations)
+                Console.WriteLine(ope);
 
-            Console.WriteLine("------------ TRANSACTIONS ------------");
-            foreach (Transaction t in listT)
-                Console.WriteLine(t);
+            bank = new Bank(listOperations,listGestionnaires, files);
+            bank.Compute();
 
-            Bank.HandleTransactions(listT, sttsPath);
-            Console.WriteLine("------------ COMPTES ------------");
-            foreach (Account ac in acc)
-                Console.WriteLine(ac);
+
+
 
             // Keep the console window open
             Console.WriteLine("Press any key to exit.");

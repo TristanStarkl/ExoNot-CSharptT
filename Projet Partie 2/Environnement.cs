@@ -12,10 +12,11 @@ namespace BankManagement
         private List<Transaction> _lastTransactions;
         private double _solde;
 
-        public Environnement(string identifiant, double solde = 0) : base(identifiant)
+        public Environnement(string identifiant, double solde = 0) : base(identifiant, DateTime.MinValue)
         {
             Identifiant = identifiant;
             _solde = double.MaxValue;
+            Manager = new Enterprise("Environnement", 0);
             _lastTransactions = new List<Transaction>();
         }
 
@@ -29,7 +30,7 @@ namespace BankManagement
             return false;
         }
 
-        internal new bool CheckIfLimitIsReached(double amount)
+        internal new bool CheckIfLimitIsReached(Transaction T)
         {
             return false;
         }

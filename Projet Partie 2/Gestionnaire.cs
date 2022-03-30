@@ -15,6 +15,8 @@ namespace BankManagement
         public TypeFrais TypeOfFees;
         public double MontantFrais;
 
+        public double TotalFees;
+
 
         public Gestionnaire(string name, int nbTransactions, TypeFrais typeOfFees, double montantFrais)
         {
@@ -23,9 +25,15 @@ namespace BankManagement
             TypeOfFees = typeOfFees;
             MontantFrais = montantFrais;
             _ListTransactions = new List<Transaction>();
+            TotalFees = 0d;
         }
 
-        public abstract double GetAmountFees(Transaction lastTransaction);
+        public double GetAmountFees(Transaction t)
+        {
+            if (TypeOfFees == TypeFrais.PERCENTAGE)
+                return (MontantFrais / 100) * t.Amount;
+            return MontantFrais;
+        }
 
         public void AddNewTransaction(Transaction T)
         {
@@ -58,21 +66,12 @@ namespace BankManagement
             Type = TypeGestionnaire.ENTREPRISE;
         }
 
-        public override double GetAmountFees(Transaction lastTransaction)
-        {
-            throw new System.NotImplementedException();
-        }
     }
     internal class Particulier : Gestionnaire
     {
         public Particulier(string name, int nbTransactions) : base(name, nbTransactions, TypeFrais.PERCENTAGE, 0.01d)
         {
             Type = TypeGestionnaire.PARTICULIER;
-        }
-
-        public override double GetAmountFees(Transaction lastTransaction)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

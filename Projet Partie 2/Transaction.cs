@@ -25,27 +25,29 @@ namespace BankManagement
         }
 
         /// <summary>
-        /// Effectue une transaction, renvoie l'état
+        /// Effectue une transaction, renvoie les frais
         /// </summary>
         /// <returns></returns>
-        public string Make()
+        public void Make()
         {
             if (From == null || To == null)
-                return Status.KO;
+                throw new ArgumentNullException();
             if (From.Identifiant == To.Identifiant)
-                return Status.KO;
+                throw new ArgumentOutOfRangeException("Virement dans le même compte");
             if (Amount <= 0)
-                return Status.KO;
+                throw new ArgumentOutOfRangeException();
             if (From.DoesTheAmountIsSuperiorToTheSolde(Amount))
-                return Status.KO;
+                throw new Exception();
             if (From.CheckIfLimitIsReached(this))
-                return Status.KO;
+                throw new Exception();
+
             // Si on peut le faire, alors
             From.Withdraw(Amount);
-            To.Deposit(Amount);
+            double fees = From.CalculateFees(this);
+            To.Deposit(Amount - fees);
+            From.Manager.TotalFees += fees;
             From.AddNewTransaction(this);
             To.AddNewTransaction(this);
-            return Status.OK;
         }
 
         /// <summary>
