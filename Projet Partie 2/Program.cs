@@ -39,7 +39,7 @@ namespace BankManagement
                     Console.WriteLine(ope);
 
                 Console.WriteLine("------------ COMPUTATION -----------");
-                bank = new Bank(listOperations,listGestionnaires, files);
+                bank = new Bank(listOperations, listGestionnaires, files);
                 bank.Compute();
 
                 Console.WriteLine("------------ FRAIS DEXECUTION -----------");

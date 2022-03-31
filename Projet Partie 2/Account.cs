@@ -29,7 +29,6 @@ namespace BankManagement
             return _solde;
         }
 
-        // Todo
         private bool CheckLimitAmountTransaction(double amount)
         {
             return Manager.CheckLimitAmountTransaction(amount);
@@ -59,9 +58,9 @@ namespace BankManagement
         /// </summary>
         /// <param name="amount"></param>
         /// <returns></returns>
-        internal bool CheckIfLimitIsReached(Transaction T)
+        internal virtual bool CheckIfLimitIsReached(Transaction T)
         {
-            return CheckTemporalLimitTransaction(T) && CheckLimitAmountTransaction(T.Amount);
+            return CheckTemporalLimitTransaction(T) || CheckLimitAmountTransaction(T.Amount);
         }
 
         /// <summary>

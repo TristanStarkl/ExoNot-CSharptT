@@ -29,7 +29,7 @@ namespace BankManagement
             return false;
         }
 
-        internal new bool CheckIfLimitIsReached(Transaction T)
+        internal override bool CheckIfLimitIsReached(Transaction T)
         {
             return false;
         }

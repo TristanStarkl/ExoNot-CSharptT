@@ -31,7 +31,7 @@ namespace BankManagement
         public double GetAmountFees(Transaction t)
         {
             if (TypeOfFees == TypeFrais.PERCENTAGE)
-                return (MontantFrais / 100) * t.Amount;
+                return MontantFrais * t.Amount;
             return MontantFrais;
         }
 
@@ -50,7 +50,7 @@ namespace BankManagement
             double sumLastTransactions = 0;
             if (_ListTransactions.Count >= 1)
             {
-                for (int i = _ListTransactions.Count - 1; i > 0 && i > _ListTransactions.Count - NbTransactions; i--)
+                for (int i = _ListTransactions.Count - 1; i > 0 && i >= _ListTransactions.Count - NbTransactions; i--)
                     sumLastTransactions += _ListTransactions[i].Amount;
             }
 
