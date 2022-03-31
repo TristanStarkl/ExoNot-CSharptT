@@ -37,6 +37,27 @@ namespace BankManagement
         TERME,
         COMPTE,
         JEUNE,
+        DEFAUT,
         ERREUR
+    }
+
+    public class AccountFileDefinition
+    {
+        public static int IDENTIFIANT = 0;
+        public static int TYPE = 1;
+        public static int DATE = 2;
+        public static int SOLDE_INITIAL = 3;
+        public static int AGE = 4;
+        public static int IDENTIFIANT_ENTREE = 5;
+        public static int IDENTIFIANT_SORTIE = 6;
+    }
+
+    public class TransactionFileDefinition
+    {
+        public static int IDENTIFIANT = 0;
+        public static int DATE = 1;
+        public static int MONTANT = 2;
+        public static int EMETTEUR = 3;
+        public static int DESTINATAIRE = 4;
     }
 }

@@ -10,7 +10,7 @@ namespace BankManagement
     {
         static void Main(string[] args)
         {
-            for (int i = 3; i != 7; i++)
+            for (int i = 1; i != 2; i++)
             {
                 Console.WriteLine("=======================================================================");
                 Console.WriteLine($"--------------------- TRAITEMENT DES FICHIERS NUMERO {i} --------------");

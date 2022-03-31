@@ -79,17 +79,14 @@ namespace BankManagement
                 while (!readerAcct.EndOfStream)
                 {
                     listColumns = readerAcct.ReadLine().Split(';');
-                    if (listColumns.Length == 5)
+                    try
                     {
-                        try
-                        {
-                            temp = new OperationCompte(listColumns);
-                            resultat.Add(temp);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                        }
+                        temp = new OperationCompte(listColumns);
+                        resultat.Add(temp);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
                     }
                 }
             }
@@ -99,17 +96,14 @@ namespace BankManagement
                 while (!readerTransaction.EndOfStream)
                 {
                     listColumns = readerTransaction.ReadLine().Split(';');
-                    if (listColumns.Length == 5)
+                    try
                     {
-                        try
-                        {
-                            temp = new OperationTransaction(listColumns);
-                            resultat.Add(temp);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                        }
+                        temp = new OperationTransaction(listColumns);
+                        resultat.Add(temp);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
                     }
                 }
             }

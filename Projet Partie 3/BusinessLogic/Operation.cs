@@ -106,9 +106,9 @@ namespace BankManagement
         public override string ToString()
         {
             if (TypeOfOperation == TypeOperation.COMPTE)
-                return $"OPERATION: COMPTE      -{Identifiant}- A LA DATE DU {Date} POUR UN SOLDE INITIAL DE {Amount} POUR LE GESTIONNAIRE {IdentifiantEntree} VERS {IdentifiantSortie}";
+                return $"OPERATION: COMPTE {Type}-{Identifiant}- DATE {Date} : {Amount} : GESTIONNAIRE {IdentifiantEntree} VERS {IdentifiantSortie}";
             else
-                return $"OPERATION: TRANSACTION -{Identifiant}- A LA DATE DU {Date} POUR UN MONTANT DE {Amount} DEPUIS LE COMPTE {IdentifiantEntree} VERS {IdentifiantSortie}";
+                return $"OPERATION: TRANSACTION -{Identifiant}- DATE  {Date} : {Amount} EUROS DEPUIS  {IdentifiantEntree} VERS {IdentifiantSortie}";
         }
 
         protected Account DoesTheAccountExist(Dictionnaire bank, string name)
@@ -151,8 +151,8 @@ namespace BankManagement
                 throw new ArgumentException("Mauvais formatage, 7 colonnes nécessaires");
 
             double amount;
-            string type = listColumns[1];
-            Age = int.Parse(listColumns[5]);
+            string type = listColumns[AccountFileDefinition.TYPE];
+            int.TryParse(listColumns[AccountFileDefinition.AGE], out Age);
 
             switch (type)
             {
@@ -169,15 +169,16 @@ namespace BankManagement
                     Type = AccountType.TERME;
                     break;
                 default:
-                    throw new Exception("Type non reconnu");
+                    Type = AccountType.DEFAUT;
+                    break;
             }
 
 
-            string tmp = listColumns[3].Replace('.', ',');
+            string tmp = listColumns[AccountFileDefinition.SOLDE_INITIAL].Replace('.', ',');
             DateTime date;
-            Identifiant = listColumns[0];
-            IdentifiantEntree = listColumns[3];
-            IdentifiantSortie = listColumns[4];
+            Identifiant = listColumns[AccountFileDefinition.IDENTIFIANT];
+            IdentifiantEntree = listColumns[AccountFileDefinition.IDENTIFIANT_ENTREE];
+            IdentifiantSortie = listColumns[AccountFileDefinition.IDENTIFIANT_SORTIE];
             TypeOfOperation = TypeOperation.COMPTE;
 
             if (String.IsNullOrEmpty(tmp))
@@ -194,7 +195,7 @@ namespace BankManagement
 
             Amount = amount;
 
-            if (!DateTime.TryParse(listColumns[1], out date))
+            if (!DateTime.TryParse(listColumns[AccountFileDefinition.DATE], out date))
                 throw new ArgumentException("La date n'est pas valide");
             Date = date;
 
@@ -202,6 +203,7 @@ namespace BankManagement
 
         /// <summary>
         /// Ajout d'un nouveau compte
+        /// TODO: EXTRAIRE LE SWITCH
         /// </summary>
         /// <param name="bank"></param>
         private void _AddNewAccount(Dictionnaire bank)
@@ -230,8 +232,9 @@ namespace BankManagement
                 case AccountType.JEUNE:
                     account = new AccountJeune(Identifiant, Date, Age, Amount);
                     break;
+                default:
+                    break;
             }
-            account = new Account(Identifiant, Date, Amount);
             account.Manager = g;
             bank.Accounts.Add(account);
             bank.NbComptes++;
@@ -278,8 +281,9 @@ namespace BankManagement
                 else // Cession d'un compte
                     _CessionAccount(bank);
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return Status.KO;
             }
 
