@@ -11,7 +11,7 @@ namespace BankManagement
 
         private List<Transaction> _lastTransactions;
 
-        public Environnement(string identifiant, double solde = 0) : base(identifiant)
+        public Environnement(string identifiant, double solde = 0) : base(identifiant, DateTime.MinValue)
         {
             Identifiant = identifiant;
             _lastTransactions = new List<Transaction>();

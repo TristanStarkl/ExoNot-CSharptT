@@ -30,8 +30,15 @@ namespace BankManagement
         /// <returns></returns>
         public void Make()
         {
+            // Vérification de l'existence
             if (From == null || To == null)
                 throw new ArgumentNullException();
+
+            // Intérêts
+            From.CalculateInterest(DateTransaction);
+            To.CalculateInterest(DateTransaction);
+
+            // Continuation des vérifications
             if (From.Identifiant == To.Identifiant)
                 throw new ArgumentOutOfRangeException("Virement dans le même compte");
             if (Amount <= 0)
@@ -39,6 +46,9 @@ namespace BankManagement
             if (From.DoesTheAmountIsSuperiorToTheSolde(Amount))
                 throw new Exception();
             if (From.CheckIfLimitIsReached(this))
+                throw new Exception();
+            // Est-ce que le compte peut faire un virement ?
+            if (!From.CanMakeExteriorVirement)
                 throw new Exception();
 
             // Si on peut le faire, alors

@@ -30,4 +30,13 @@ namespace BankManagement
         TRANSACTION,
         COMPTE
     }
+
+    public enum AccountType
+    {
+        LIVRET,
+        TERME,
+        COMPTE,
+        JEUNE,
+        ERREUR
+    }
 }
