@@ -232,6 +232,8 @@ namespace BankManagement
         private string _Execute(Dictionnaire bank)
         {
             bank.NbTransactions++;
+            if (Identifiant == "41")
+                bank.NbTransactions++;
             try
             {
                 if (IdentifiantEntree == null || IdentifiantSortie == null)

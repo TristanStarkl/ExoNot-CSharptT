@@ -43,15 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Comptes\Account.cs" />
-    <Compile Include="Bank\Bank.cs" />
-    <Compile Include="Comptes\Environnement.cs" />
-    <Compile Include="Gestionnaires\Gestionnaire.cs" />
-    <Compile Include="Operations\Operation.cs" />
+    <Compile Include="BusinessLogic\Account.cs" />
+    <Compile Include="BusinessLogic\Bank.cs" />
+    <Compile Include="BusinessLogic\Environnement.cs" />
+    <Compile Include="BusinessLogic\Gestionnaire.cs" />
+    <Compile Include="BusinessLogic\Operation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Constantes\Const.cs" />
-    <Compile Include="Transactions\Transaction.cs" />
+    <Compile Include="BusinessLogic\Constantes\Const.cs" />
+    <Compile Include="BusinessLogic\Transaction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

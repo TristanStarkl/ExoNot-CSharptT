@@ -10,12 +10,10 @@ namespace BankManagement
     {
 
         private List<Transaction> _lastTransactions;
-        private double _solde;
 
         public Environnement(string identifiant, double solde = 0) : base(identifiant)
         {
             Identifiant = identifiant;
-            _solde = double.MaxValue;
             _lastTransactions = new List<Transaction>();
         }
 
