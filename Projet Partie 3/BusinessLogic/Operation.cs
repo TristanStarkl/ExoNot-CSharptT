@@ -148,7 +148,7 @@ namespace BankManagement
         public OperationCompte(string[] listColumns)
         {
             if (listColumns.Length != 7)
-                throw new ArgumentException("Mauvais formatage, 5 colonnes nécessaires");
+                throw new ArgumentException("Mauvais formatage, 7 colonnes nécessaires");
 
             double amount;
             string type = listColumns[1];
