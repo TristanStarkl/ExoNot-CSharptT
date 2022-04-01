@@ -1,0 +1,10 @@
+Statistiques
+Nombre de comptes : 0
+Nombre de transactions : 27
+Nombre de réussites : 0
+Nombre d'échecs : 26
+Montant total des réussites : 0
+ 
+Frais de gestions :
+3 : 0 euros
+4 : 0 euros

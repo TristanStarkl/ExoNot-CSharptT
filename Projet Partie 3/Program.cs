@@ -45,6 +45,12 @@ namespace BankManagement
                 Console.WriteLine("------------ FRAIS DEXECUTION -----------");
                 foreach (Gestionnaire ges in bank.Listes.Gestionnaires)
                     Console.WriteLine($"GESTIONNAIRE: {ges.Name}: {ges.TotalFees} euros");
+                Console.WriteLine("------------ SOLDES DES COMPTES -----------");
+                foreach (Account acc in bank.Listes.Accounts)
+                    Console.WriteLine($"COMPTE: {acc.Identifiant}: {acc.GetSolde()} euros");
+                Console.WriteLine("------------ INTERETS GENERES -----------");
+                foreach (Account acc in bank.Listes.Accounts)
+                    Console.WriteLine($"COMPTE: {acc.Identifiant}: {acc.InterestMade} euros");
 
             }
 

@@ -1,0 +1,4 @@
+40;Particulier;2
+41;Entreprise;2
+42;Particulier;1
+43;Entreprise;0

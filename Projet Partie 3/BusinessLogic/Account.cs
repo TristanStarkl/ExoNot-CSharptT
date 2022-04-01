@@ -14,34 +14,37 @@ namespace BankManagement
         private double _solde;
         // Todo: bouger la limite dans le gestionnaire
         internal Gestionnaire Manager;
-        protected int _temporalTransactionAmount;
-        protected const int _temporalTransactionDays = 7;
-        private AccountType _typeOfAccount;
-        protected DateTime LastTimeWeCalculatedInterest;
+        protected int _limitWithdrawal;
+        protected const int _temporalAmountDays = 7;
+        private AccountType Type;
         public bool CanMakeExteriorVirement;
-        public bool CanWithdrawMoney;
+        public bool CanMakeWithdrawal;
         public DateTime DateOuv;
+        public DateTime? DateClo;
 
+        public DateTime LastTimeWeCalculatedInterest;
         public double InterestRate;
-        public double Interest;
+        public double InterestMade;
 
         public Account(string identifiant, DateTime dateOuv, double solde = 0, AccountType TypeCompte = AccountType.COMPTE)
         {
             Identifiant = identifiant;
             _solde = solde;
             _lastTransactions = new List<Transaction>();
-            _typeOfAccount = TypeCompte;
-            InterestRate = 2;
+            Type = TypeCompte;
             CanMakeExteriorVirement = true;
-            CanWithdrawMoney = true;
-            Interest = 0d;
-            _temporalTransactionAmount = 1000;
+            CanMakeWithdrawal = true;
+            InterestMade = 0d;
+            InterestRate = 0;
+            _limitWithdrawal = 1000;
             DateOuv = dateOuv;
+            LastTimeWeCalculatedInterest = dateOuv;
+            DateClo = null;
         }
 
         internal AccountType GetAccountType()
         {
-            return _typeOfAccount;
+            return Type;
         }
         internal double GetSolde()
         {
@@ -56,7 +59,12 @@ namespace BankManagement
         #region Interest
         internal virtual void CalculateInterest(DateTime date)
         {
-            // On ne fais rien ici
+            // TODO
+            TimeSpan nbDays = date - LastTimeWeCalculatedInterest;
+            double InterestThisTime = (GetSolde() * (double)((nbDays.TotalDays / 365d) * (InterestRate / 100)));
+            Deposit(InterestThisTime);
+            InterestMade += InterestThisTime;
+            LastTimeWeCalculatedInterest = date;
         }
 
         #endregion
@@ -68,13 +76,13 @@ namespace BankManagement
         }
 
         /// <summary>
-        /// ToDO Implémenter la méthode qui vérifie la temporalité de chacune des transactions
+        /// Implémenter la méthode qui vérifie la temporalité de chacune des transactions
         /// </summary>
         /// <param name="amount"></param>
         /// <returns></returns>
         private bool CheckTemporalLimitTransaction(Transaction T)
         {
-            DateTime minDate = T.DateTransaction - TimeSpan.FromDays(_temporalTransactionDays);
+            DateTime minDate = T.DateTransaction - TimeSpan.FromDays(_temporalAmountDays);
             double amount = 0d;
 
             for (int i = _lastTransactions.Count - 1; i >= 0 && _lastTransactions[i].DateTransaction >= minDate; i--)
@@ -83,7 +91,7 @@ namespace BankManagement
             }
 
             amount += T.Amount;
-            return amount > _temporalTransactionAmount;
+            return amount > _limitWithdrawal;
         }
 
         /// <summary>
@@ -152,7 +160,7 @@ namespace BankManagement
 
         public override string ToString()
         {
-            return $"Compte numéro {Identifiant} {_typeOfAccount}: {_solde} euros";
+            return $"Compte numéro {Identifiant} {Type}: {_solde} euros";
         }
     }
 
@@ -163,8 +171,9 @@ namespace BankManagement
             if (age < 10 || age > 17)
                 throw new ArgumentOutOfRangeException($"L'age de la personne est invalide: {age}");
             Deposit(10 * age);
-            _temporalTransactionAmount *= (int)(age / 18);
+            _limitWithdrawal = (int)((age / 18f) * _limitWithdrawal);
             InterestRate = 0;
+
         }
     }
     public class AccountLivret : Account
@@ -172,16 +181,7 @@ namespace BankManagement
         public AccountLivret(string identifiant, DateTime date, double solde = 0) : base(identifiant, date, solde, AccountType.LIVRET)
         {
             InterestRate = 2;
-            CanWithdrawMoney = false;
-        }
-
-        internal override void CalculateInterest(DateTime date)
-        {
-            TimeSpan nbDays = date - LastTimeWeCalculatedInterest;
-            double InterestThisTime = (GetSolde() * (int)(nbDays.TotalDays / 365d));
-            Deposit(InterestThisTime);
-            Interest += InterestThisTime;
-            LastTimeWeCalculatedInterest = date;
+            CanMakeWithdrawal = false;
         }
     }
 
@@ -193,20 +193,7 @@ namespace BankManagement
                 throw new ArgumentException("Erreur, le solde minimum pour un compte à terme est de 200 euros");
             InterestRate = 5;
             CanMakeExteriorVirement = false;
-            CanWithdrawMoney = false;
-        }
-
-        /// <summary>
-        /// TODO: L'intérêt spécial chaque année de 10%
-        /// </summary>
-        /// <param name="date"></param>
-        internal override void CalculateInterest(DateTime date)
-        {
-            TimeSpan nbDays = date - LastTimeWeCalculatedInterest;
-            double InterestThisTime = (GetSolde() * (int)(nbDays.TotalDays / 365d));
-            Deposit(InterestThisTime);
-            Interest += InterestThisTime;
-            LastTimeWeCalculatedInterest = date;
+            CanMakeWithdrawal = false;
         }
 
         internal override bool CanWeCloseTheAccount(DateTime date)

@@ -7,16 +7,16 @@ namespace BankManagement
 {
     internal class Bank
     {
-        public List<Operation> Operations { get; set; }
-        public FileHandling Files { get; set; }
+        public List<Operation> ListOperations { get; set; }
+        public FileHandling FH { get; set; }
         public Dictionnaire Listes;
 
         public Bank(List<Operation> operations, List<Gestionnaire> gestionnaires, FileHandling files)
-        {
-            Operations = operations;
+        {           
+            ListOperations = operations;
 
             Listes = new Dictionnaire(gestionnaires);
-            Files = files;
+            FH = files;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace BankManagement
                             foreach (Gestionnaire ges in resultat)
                             {
                                 if (ges.Name == listColumns[0])
-                                    throw new Exception($"Deux comptes au nom identiques {ges.Name}");
+                                    throw new Exception($"Deux gestionnaires au nom identiques {ges.Name}");
                             }
                             listColumns[2] = listColumns[2].Replace(".", ",");
                             nbTransactions = 0;
@@ -60,7 +60,7 @@ namespace BankManagement
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        Console.WriteLine(e.Message);
                     }
                 }
             }
@@ -86,7 +86,7 @@ namespace BankManagement
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        Console.WriteLine(e.Message);
                     }
                 }
             }
@@ -115,15 +115,15 @@ namespace BankManagement
 
         public void Compute()
         {
-            using (StreamWriter account = new StreamWriter(Files.SortieAccount))
+            using (StreamWriter account = new StreamWriter(FH.SortieAccount))
             {
-                using (StreamWriter transaction = new StreamWriter(Files.SortieTransactions))
+                using (StreamWriter transaction = new StreamWriter(FH.SortieTransactions))
                 {
-                    using (StreamWriter metrologie = new StreamWriter(Files.SortiesStats))
+                    using (StreamWriter metrologie = new StreamWriter(FH.SortiesStats))
                     {
-                        Files.AddStreamWriters(account, transaction, metrologie);
-                        Listes.FH = Files;
-                        foreach (Operation operation in Operations)
+                        FH.AddStreamWriters(account, transaction, metrologie);
+                        Listes.FH = FH;
+                        foreach (Operation operation in ListOperations)
                             operation.Execute(Listes);
                         Listes.Compute();
                     }

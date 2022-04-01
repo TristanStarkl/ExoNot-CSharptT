@@ -1,0 +1,2 @@
+1;Particulier;10
+2;Entreprise;4

@@ -34,22 +34,26 @@ namespace BankManagement
             if (From == null || To == null)
                 throw new ArgumentNullException();
 
+            if (Name == "3")
+                Console.WriteLine("Point d'arrêt");
             // Intérêts
             From.CalculateInterest(DateTransaction);
             To.CalculateInterest(DateTransaction);
 
             // Continuation des vérifications
             if (From.Identifiant == To.Identifiant)
-                throw new ArgumentOutOfRangeException("Virement dans le même compte");
+                throw new ArgumentOutOfRangeException($"TRANSACTION {Name}:Virement dans le même compte");
             if (Amount <= 0)
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException($"TRANSACTION {Name}: Montant inférieur à 0");
             if (From.DoesTheAmountIsSuperiorToTheSolde(Amount))
-                throw new Exception();
+                throw new Exception($"TRANSACTION {Name}: Le montant est supérieur au solde");
             if (From.CheckIfLimitIsReached(this))
-                throw new Exception();
+                throw new Exception($"TRANSACTION {Name}: Limite atteinte pour le compte débiteur ");
             // Est-ce que le compte peut faire un virement ?
+            if (To.Identifiant == "0" && !From.CanMakeWithdrawal)
+                throw new Exception($"TRANSACTION {Name}: Impossible de retirer de l'argent");
             if (!From.CanMakeExteriorVirement)
-                throw new Exception();
+                throw new Exception($"TRANSACTION {Name}: Impossible d'émettre des virements");
 
             // Si on peut le faire, alors
             From.Withdraw(Amount);
@@ -59,7 +63,6 @@ namespace BankManagement
                 From.Manager.TotalFees += fees;
             Console.WriteLine($"La transaction numéro {Name} de {From.Identifiant} a {To.Identifiant} a entraîné {fees} euros de frais");
             From.AddNewTransaction(this);
-            To.AddNewTransaction(this);
         }
 
         /// <summary>

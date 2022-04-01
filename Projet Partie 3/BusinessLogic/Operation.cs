@@ -10,10 +10,10 @@ namespace BankManagement
         public double Amount;
         public string IdentifiantEntree;
         public string IdentifiantSortie;
-        public TypeOperation TypeOfOperation;
+        public TypeOperation Type;
 
-        public int Age;
-        public AccountType Type;
+        public int c;
+        public AccountType TypeAccount;
 
 
         public Operation(string identifiant, DateTime date, double amount, string entree, string sortie, TypeOperation typeOfOperation)
@@ -23,7 +23,7 @@ namespace BankManagement
             Amount = amount;
             IdentifiantEntree = entree;
             IdentifiantSortie = sortie;
-            TypeOfOperation = typeOfOperation;
+            Type = typeOfOperation;
         }
 
         protected Operation()
@@ -39,20 +39,20 @@ namespace BankManagement
             string tmp = listColumns[2].Replace('.', ',');
             DateTime date;
             Identifiant = listColumns[0];
-            IdentifiantEntree = listColumns[3];
+            this.IdentifiantEntree = listColumns[3];
             IdentifiantSortie = listColumns[4];
-            TypeOfOperation = t;
+            Type = t;
             if (String.IsNullOrEmpty(tmp) && t == TypeOperation.COMPTE)
                 tmp = "0";
 
-            if (String.IsNullOrEmpty(IdentifiantEntree))
-                IdentifiantEntree = null;
+            if (string.IsNullOrEmpty(this.IdentifiantEntree))
+                this.IdentifiantEntree = null;
                 
             if (String.IsNullOrEmpty(IdentifiantSortie))
                 IdentifiantSortie = null;
 
             if (!double.TryParse(tmp, out amount))
-                throw new ArgumentException($"Le montant n'est pas valide pour l'opération {Identifiant} {TypeOfOperation} (montant reçu : {tmp})");
+                throw new ArgumentException($"Le montant n'est pas valide pour l'opération {Identifiant} {Type} (montant reçu : {tmp})");
 
             Amount = amount;
 
@@ -105,7 +105,7 @@ namespace BankManagement
 
         public override string ToString()
         {
-            if (TypeOfOperation == TypeOperation.COMPTE)
+            if (Type == TypeOperation.COMPTE)
                 return $"OPERATION: COMPTE {Type}-{Identifiant}- DATE {Date} : {Amount} : GESTIONNAIRE {IdentifiantEntree} VERS {IdentifiantSortie}";
             else
                 return $"OPERATION: TRANSACTION -{Identifiant}- DATE  {Date} : {Amount} EUROS DEPUIS  {IdentifiantEntree} VERS {IdentifiantSortie}";
@@ -118,14 +118,14 @@ namespace BankManagement
             // On récupère le compte
             foreach (Account acc in bank.Accounts)
             {
-                if (acc.Identifiant == name)
+                if (acc.Identifiant == name && acc.DateClo == null)
                 {
                     account = acc;
                     break;
                 }
             }
             if (account == null)
-                throw new ArgumentException($"Le compte n'existe pas {Identifiant}");
+                throw new ArgumentException($"COMPTE {Identifiant} : Le compte n'existe pas :'{Identifiant}'");
             return account;
         }
 
@@ -138,7 +138,7 @@ namespace BankManagement
                     m = g;
             }
             if (m == null)
-                throw new ArgumentException($"Le gestionnaire n'existe pas {name}");
+                throw new ArgumentException($"COMPTE {Identifiant} : Le gestionnaire n'existe pas :'{name}'");
             return m;
         }
     }
@@ -152,24 +152,24 @@ namespace BankManagement
 
             double amount;
             string type = listColumns[AccountFileDefinition.TYPE];
-            int.TryParse(listColumns[AccountFileDefinition.AGE], out Age);
+            int.TryParse(listColumns[AccountFileDefinition.AGE], out c);
 
             switch (type)
             {
                 case "J":
-                    Type = AccountType.JEUNE;
+                    TypeAccount = AccountType.JEUNE;
                     break;
                 case "C":
-                    Type = AccountType.COMPTE;
+                    TypeAccount = AccountType.COMPTE;
                     break;
                 case "L":
-                    Type = AccountType.LIVRET;
+                    TypeAccount = AccountType.LIVRET;
                     break;
                 case "T":
-                    Type = AccountType.TERME;
+                    TypeAccount = AccountType.TERME;
                     break;
                 default:
-                    Type = AccountType.DEFAUT;
+                    TypeAccount = AccountType.DEFAUT;
                     break;
             }
 
@@ -179,7 +179,7 @@ namespace BankManagement
             Identifiant = listColumns[AccountFileDefinition.IDENTIFIANT];
             IdentifiantEntree = listColumns[AccountFileDefinition.IDENTIFIANT_ENTREE];
             IdentifiantSortie = listColumns[AccountFileDefinition.IDENTIFIANT_SORTIE];
-            TypeOfOperation = TypeOperation.COMPTE;
+            Type = TypeOperation.COMPTE;
 
             if (String.IsNullOrEmpty(tmp))
                 tmp = "0";
@@ -191,14 +191,13 @@ namespace BankManagement
                 IdentifiantSortie = null;
 
             if (!double.TryParse(tmp, out amount))
-                throw new ArgumentException($"Le montant n'est pas valide pour l'opération {Identifiant} {TypeOfOperation} (montant reçu : {tmp})");
+                throw new ArgumentException($"Le montant n'est pas valide pour l'opération {Identifiant} {Type} (montant reçu : {tmp})");
 
             Amount = amount;
 
             if (!DateTime.TryParse(listColumns[AccountFileDefinition.DATE], out date))
                 throw new ArgumentException("La date n'est pas valide");
             Date = date;
-
         }
 
         /// <summary>
@@ -218,25 +217,39 @@ namespace BankManagement
                     throw new ArgumentException($"Le compte existe déjà {Identifiant}");
             }
 
-            switch (Type)
+            switch (TypeAccount)
             {
                 case AccountType.LIVRET:
-                    account = new AccountLivret(Identifiant, Date, Amount);
+                    account = new AccountLivret(Identifiant, Date, Amount)
+                    {
+                        Manager = g
+                    };
+                    bank.Accounts.Add(account);
                     break;
                 case AccountType.TERME:
-                    account = new AccountTerme(Identifiant, Date, Amount);
+                    account = new AccountTerme(Identifiant, Date, Amount)
+                    {
+                        Manager = g
+                    };
+                    bank.Accounts.Add(account);
                     break;
                 case AccountType.COMPTE:
-                    account = new Account(Identifiant, Date, Amount);
+                    account = new Account(Identifiant, Date, Amount)
+                    {
+                        Manager = g
+                    }; 
+                    bank.Accounts.Add(account);
                     break;
                 case AccountType.JEUNE:
-                    account = new AccountJeune(Identifiant, Date, Age, Amount);
+                    account = new AccountJeune(Identifiant, Date, c, Amount)
+                    {
+                        Manager = g
+                    };
+                    bank.Accounts.Add(account);
                     break;
                 default:
                     break;
             }
-            account.Manager = g;
-            bank.Accounts.Add(account);
             bank.NbComptes++;
         }
 
@@ -252,7 +265,7 @@ namespace BankManagement
             if (!account.CanWeCloseTheAccount(Date))
                 throw new ArgumentException($"Impossible de clôturer le compte {Identifiant}, cela fait moins de 5ans");
 
-            bank.Accounts.Remove(account);
+            account.DateClo = Date;
             bank.NbComptes--;
         }
 
@@ -265,6 +278,8 @@ namespace BankManagement
             if (account.Manager.Name != ges1.Name)
                 throw new ArgumentException($"Le compte {Identifiant} n'est pas géré par le manager {IdentifiantEntree}");
 
+            if (ges1.Name == ges2.Name)
+                throw new ArgumentException($"Impossible de céder le compte au même gestionnaire {Identifiant}");
             account.Manager = ges2;
         }
 
@@ -283,7 +298,7 @@ namespace BankManagement
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 return Status.KO;
             }
 
@@ -314,8 +329,7 @@ namespace BankManagement
         private string _Execute(Dictionnaire bank)
         {
             bank.NbTransactions++;
-            if (Identifiant == "41")
-                bank.NbTransactions++;
+
             try
             {
                 if (IdentifiantEntree == null || IdentifiantSortie == null)
@@ -324,9 +338,10 @@ namespace BankManagement
                 bank.NbReussites++;
                 bank.MontantReussite += Amount;
             }
-            catch
+            catch (Exception e)
             {
                 bank.NbEchecs++;
+                Console.WriteLine(e.Message);
                 return Status.KO;
             }
 
